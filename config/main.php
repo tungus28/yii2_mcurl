@@ -10,6 +10,7 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+	'defaultRoute' => 'news',
     'controllerNamespace' => 'frontend\controllers',
 	'modules' => [
 		'gii' => [
@@ -22,6 +23,12 @@ return [
 		],
     ],	
     'components' => [
+		'urlManager' => [
+			'enablePrettyUrl' => true,
+			'rules' => [
+				// your rules go here
+			],    
+		],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,

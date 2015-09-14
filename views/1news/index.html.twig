@@ -1,0 +1,173 @@
+{% extends "AcmeNewsBundle::layout.html.twig" %}
+
+
+
+{% block title "" %}
+
+
+
+    {% block content_header '' %}
+
+        {% block content %}
+
+        <script>
+            $(function(){
+                var buttonGetNewsPressed = false;
+                //кнопка получить новость
+                $('#getNews').click(function(){//одна новость
+                    if (buttonGetNewsPressed === true) return;//защита от повторных нажатий
+                    buttonGetNewsPressed = true;
+                    $('#getNews').css("background-color", "#286090"); //change btn color
+                    $('#oneNewsStatus').html('');
+
+                    //проверка прогресса загрузки новости
+                    var oneNewsStatus = '';
+                    var flagOneNews = '';
+                    function checkOneNews() {
+                        $.get("ajax_t.php", {check_progress: 1})
+                                .done(function(response){
+                                    if (oneNewsStatus !== response) {
+                                        var time= response.match(/\d*\.\d*/);
+                                        var msg = response.match(/[а-яА-Я\s:]+/);
+                                        if (time !== null) $('#oneNewsStatus').append(" " + time);
+                                        setTimeout(function() {
+                                            $('#oneNewsStatus').append("<br>" + msg);
+                                        }, 300);//вывод названия обрабатываемого пункта через 0.3 с
+
+                                        oneNewsStatus = response;
+                                    }
+                                    if (flagOneNews !=='done') {
+                                        setTimeout(function(){
+                                            checkOneNews();//рекурсия запросов
+                                        }, 310);//отсылка повторных запросов не ранее .31 с от получения ответа
+                                    }
+                                });
+                    }
+
+                    //обработка одной новости
+                    $.post( "/getonenews", { getNews: 1})
+                        .done(function( resp ) {
+                            flagOneNews = 'done';
+                            $('#oneNewsStatus').append(resp);
+                            $('#getNews').css("background-color", "#337ab7");
+                            setTimeout(function(){
+                                buttonGetNewsPressed = false;
+                            }, 500);//держим клавишу еще нажатой 0.5 с
+                        });
+                    setTimeout(function () {
+                        checkOneNews();//прогресс
+                    }, 300);//начинаем проверку прогресса через 0.3 с
+
+                    //ограничение запроса на сервер
+//                    setTimeout(function(){
+//                        flagOneNews='done';
+//                        $('#oneNewsStatus').html('Ошибка: сервер не ответил');
+//                        buttonGetNewsPressed = false;
+//                        $('#getNews').css("background-color", "#337ab7");
+//                    }, 30000);//через 5 с
+
+                });
+
+                //кнопка получить много новостей
+                $('#getLotNews').click(function(){
+                    var newsCnt = 0;
+                    function checkLotNews(){
+                        $.get("ajax_t.php", {check_lot_news_progress: 1})
+                                .done(function( resp ) {
+                                   if (newsCnt !== resp) {
+                                        $('#lotNewsStatus').html('<br>Добавлено новостей: ' + resp);
+                                    }
+                                   newsCnt = resp;
+                                });
+                    }
+                    $.post( "/getlotnews", { getLotNews: 1})
+                        .done(function( resp ) {
+                            setTimeout(clearInterval(intervalCheck), 1001);//отмена проверки прогресса через 1с от конца запроса
+                        });
+                    //проверка прогресса добавления новостей
+                    var intervalCheck = setInterval(function() {
+                        checkLotNews();
+                    }, 500);
+
+                });
+                //очистить базу
+                $('#clearDB').click(function() {
+                    $.get("/cleardb",{})
+                            .done(function(data) {
+                                //alert(data);
+
+                            });
+                }
+
+                );
+
+            });
+        </script>
+            <div id="test"></div>
+            <div style="float: right; margin: 20px;">Количество посещений {{ visits }}</div>
+            <form method="post" action="">
+                <div style="margin-bottom: 30px;">
+
+                    <button id="getNews" class="btn btn-primary"  type="button">Получить новость</button>
+                    <button id="getLotNews" class="btn btn-primary" type="button">Получить много новостей</button>
+                    <button class="btn btn-primary">Статистика по буквам</button><br><br>
+                    <button id="clearDB" class="btn btn-primary">Очистить базу и перезагрузить</button>
+
+                    <div style="margin-bottom: 10px;">
+                        <label>Введите слово для фильтра&nbsp;</label>
+                        <input placeholder="слово" type="text" name="searchWord" >
+                        <input  class="btn btn-primary" type = "submit" name='get_freq' value="Отчет по словам">
+                    </div>
+                    <div id="oneNewsStatus" style="font-size: 16px;"></div>
+                    <div id="lotNewsStatus" style="font-size: 16px;"></div>
+                    <div>&nbsp;{{timeLetters}}</div>
+                    <div>&nbsp;{{ timeWord }}</div>
+
+
+
+                <!--пагинатор-->
+                <table style="width: 100%; margin-bottom: 20px;">
+                    <tr>
+                        <td style="width: 20%">Всего страниц: {{ news.getCountPage }}</td>
+                        <td style="width: 30%; text-align: center;">{{ knp_pagination_render(news) }}</td>
+                        <td style="width: 10%; text-align: center;"> Всего: {{ news.getTotalItemCount }}</td>
+                        <td style="width: 40%; text-align: right;">Показывать
+                            <a href="?maxItemPerPage=20">20</a>
+                            <a href="?maxItemPerPage=50">50</a>
+                            <a href="?maxItemPerPage=100">100</a> на страницу</td>
+                        </tr>
+                </table>
+
+
+                <table class="table" cellspacing="5px" cellpadding="10px" width="850px">
+                    <tr>
+                        {# sorting of properties based on query components #}
+                        <th{% if news.isSorted('n.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(news, '№', 'n.id') }}</th>
+                        <!--<th>{{ knp_pagination_sortable(news, 'Дата', 'n.date_create') }}</th>-->
+                        <th style="padding: 10px">{{ knp_pagination_sortable(news, 'Заголовок', 'n.name') }}</th>
+                        <th>{{ knp_pagination_sortable(news, 'Статья', 'n.content_text') }}</th>
+                        <th>{{ knp_pagination_sortable(news, 'Выбор', 'n.active') }}</th>
+                        <th style="padding: 10px">{{ knp_pagination_sortable(news, 'Частота', 'n.freq') }}</th>
+                    </tr>
+
+                    {% for item in news %}
+                        <tr >
+                            <td align="center">{{ loop.index }}</td>
+                            <!--<td align="center">{{ item.dateCreate | date("d-m-Y") }}</td>-->
+                            <td align="left" style="padding: 10px">{{ item.name }}</td>
+                            <td>{{ item.contentText|slice(0, 400) }}</td>
+                            <td align="center"><input type="checkbox" name="active[]" value="{{ loop.index0 }}"></td>
+                            <td align="center">{{ item.freq }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+                </div>
+            </form>
+
+            <!--пагинатор-->
+            <div style="text-align: center"> {{ knp_pagination_render(news)}}</div>
+
+        {% endblock %}
+
+
