@@ -6,7 +6,10 @@ class NewsController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        //$this->view->registerJsFile('js/jquery-min.js');
+        //$this->view->registerCssFile('css/bootstrap.min.css');
+
+        return $this->render('index.twig', []);
     }
 
 }

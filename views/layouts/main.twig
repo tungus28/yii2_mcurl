@@ -1,0 +1,21 @@
+{{ this.beginPage() }}
+<!doctype html>
+<html lang="{{app.language}}">
+    <head>
+        {{  this.registerJsFile('js/jquery-min.js') }}
+        {{ this.registerCssFile('css/bootstrap.min.css') }}
+        <meta charset="{{app.charset}}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">      
+        {{ html.csrfMetaTags() | raw }}
+        <title>{{ html.encode(this.title) }}</title>
+        {{ this.head() }}
+    </head>
+    <body>
+        <div style="width: 1000px; margin: 20px auto;">
+            {{ this.beginBody() }}
+                {{ content | raw }}
+            {{ this.endBody() }}
+        </div>
+    </body>
+</html>
+{{ this.endPage() }}

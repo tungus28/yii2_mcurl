@@ -12,6 +12,7 @@ return [
     'bootstrap' => ['log'],
 	'defaultRoute' => 'news',
     'controllerNamespace' => 'frontend\controllers',
+	'layout' => 'main.twig',
 	'modules' => [
 		'gii' => [
 			'class' => 'yii\gii\Module',
