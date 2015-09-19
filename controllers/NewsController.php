@@ -2,16 +2,28 @@
 
 namespace frontend\controllers;
 
+use Yii;
 use yii\web\Controller;
 
 class NewsController extends Controller
 {
     public function actionIndex()
     {
-        //$this->view->registerJsFile('js/jquery-min.js', ['position' => View::POS_HEAD]);
-        //$this->view->registerCssFile('css/bootstrap.min.css');
 
-        return $this->render('index.twig', []);
+        $session = Yii::$app->session;
+        if ($session->has('visits')) {
+            $session->set('visits', $session->get('visits') + 1);
+            $session->close();
+        } else {
+            $session->set('visits', 1);
+            $session->close();
+        }
+
+        //echo "<pre>"; var_dump($session); exit;
+
+        return $this->render('index.twig', [
+            'visits' => $session->get('visits'),
+        ]);
     }
 
 }

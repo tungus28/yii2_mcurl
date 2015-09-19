@@ -55,12 +55,12 @@ class NewsController extends Controller
         //обрабока запроса
         $req = $this->get('request');//создаем объект Symfony\Component\HttpFoundation\Request
 
-       /* $paginator  = $this->get('knp_paginator');
+        $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $req->query->get('page', 1),/*page number*/
             /*$req->query->get('maxItemPerPage', 20)/*limit per page*/
-        /*);*/
+        /*);
 
         $timeLetters = '';
         $timeWord = '';
