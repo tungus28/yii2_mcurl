@@ -1,27 +1,28 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "ra_news".
  *
  * @property string $name
- * @property string $content_text
+ * @property string $content
  * @property boolean $active
  * @property integer $freq
  * @property integer $id
- * @property string $date_create
+ * @property string $created
  */
-class News extends \yii\db\ActiveRecord
+class News extends ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'ra_news';
+        return 'news.ra_news';
     }
 
     /**
@@ -30,11 +31,11 @@ class News extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'content_text', 'active', 'freq', 'id', 'date_create'], 'required'],
-            [['name', 'content_text'], 'string'],
+            [['name', 'content', 'active', 'freq', 'id', 'created'], 'required'],
+            [['name', 'content'], 'string'],
             [['active'], 'boolean'],
             [['freq', 'id'], 'integer'],
-            [['date_create'], 'safe']
+            [['created'], 'safe']
         ];
     }
 
@@ -45,11 +46,11 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             'name' => 'Name',
-            'content_text' => 'Content Text',
+            'content' => 'Content',
             'active' => 'Active',
             'freq' => 'Freq',
             'id' => 'ID',
-            'date_create' => 'Date Create',
+            'created' => 'Created',
         ];
     }
 }

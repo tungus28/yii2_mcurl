@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use frontend\models\News;
 
 class NewsController extends Controller
 {
@@ -19,10 +20,15 @@ class NewsController extends Controller
             $session->close();
         }
 
-        //echo "<pre>"; var_dump($session); exit;
+        $news = News::find()
+            ->orderBy('id')
+            ->all();
+
+        //echo "<pre>"; var_dump($news); exit;
 
         return $this->render('index.twig', [
             'visits' => $session->get('visits'),
+            'news' => $news,
         ]);
     }
 
