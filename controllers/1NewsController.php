@@ -8,8 +8,8 @@ namespace Acme\NewsBundle\Controller;
 //use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\HttpFoundation\Response;
 //use Acme\NewsBundle\Form\ContactType;
-use \Curl\Curl;
-use Curl\MultiCurl;
+//use \Curl\Curl;
+//use Curl\MultiCurl;
 
 // these import the "@Route" and "@Template" annotations
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -59,8 +59,8 @@ class NewsController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $req->query->get('page', 1),/*page number*/
-            /*$req->query->get('maxItemPerPage', 20)/*limit per page*/
-        /*);
+            $req->query->get('maxItemPerPage', 20)/*limit per page*/
+        );
 
         $timeLetters = '';
         $timeWord = '';
@@ -117,7 +117,7 @@ class NewsController extends Controller
                 return new Response($this->timeCut() . "<br>такая новость есть в базе");
             }
         }
-    }
+    }}
 
     public function getLotNewsAction(Request $request)
     {

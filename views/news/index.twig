@@ -137,9 +137,9 @@
                     <tr>
                         {# sorting of properties based on query components #}
                      {#   <th{% if news.isSorted('n.id') %} class="sorted"{% endif %}>новости отсортированные</th>
-                        <!--<th>{{ knp_pagination_sortable(news, 'Дата', 'n.date_create') }}</th>-->
+                        <!--<th>{{ knp_pagination_sortable(news, 'Дата', 'n.created') }}</th>-->
                         <th style="padding: 10px">{{ knp_pagination_sortable(news, 'Заголовок', 'n.name') }}</th>
-                        <th>{{ knp_pagination_sortable(news, 'Статья', 'n.content_text') }}</th>
+                        <th>{{ knp_pagination_sortable(news, 'Статья', 'n.content') }}</th>
                         <th>{{ knp_pagination_sortable(news, 'Выбор', 'n.active') }}</th>
                         <th style="padding: 10px">{{ knp_pagination_sortable(news, 'Частота', 'n.freq') }}</th>
                     #}
@@ -148,9 +148,9 @@
                     {% for item in news %}
                         <tr >
                             <td align="center">{{ loop.index }}</td>
-                            <!--<td align="center">{{ item.dateCreate | date("d-m-Y") }}</td>-->
+                            <!--td align="center">{# item.created | date("d-m-Y") #}</td-->
                             <td align="left" style="padding: 10px">{{ item.name }}</td>
-                            <td>{{ item.contentText|slice(0, 400) }}</td>
+                            <td>{{ item.content | slice(0, 400)  }}</td><!-- slice(0, 400) -->
                             <td align="center"><input type="checkbox" name="active[]" value="{{ loop.index0 }}"></td>
                             <td align="center">{{ item.freq }}</td>
                         </tr>
