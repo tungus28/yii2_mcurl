@@ -13,15 +13,11 @@ return [
 	'defaultRoute' => 'news',
     'controllerNamespace' => 'frontend\controllers',
 	'layout' => 'main.twig',
-	'modules' => [
-		'gii' => [
-			'class' => 'yii\gii\Module',
-			'allowedIPs' => ['*'],
-		],
+	'modules' => [		
 		'webshell' => [
 			'class' => 'samdark\webshell\Module',
-			'allowedIPs' => ['*']
-		],
+			'allowedIPs' => ['*'],
+		],		
     ],	
     'components' => [
 		'urlManager' => [
