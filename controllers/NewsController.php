@@ -5,6 +5,8 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use frontend\models\News;
+use yii\data\ActiveDataProvider;
+use yii\widgets\LinkPager;
 
 class NewsController extends Controller
 {
@@ -20,15 +22,31 @@ class NewsController extends Controller
             $session->close();
         }
 
-        $news = News::find()
-            ->orderBy('id')
-            ->all();
+        $query = News::find();//->where(['status' => 1]);
 
-        //echo "<pre>"; var_dump($news); exit;
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'name' => SORT_ASC,
+                ]
+            ],
+        ]);
+
+        $news = $provider->getModels();
+        $pages = $provider->getPagination();//to be called after getModels()
+      //  $pager = new LinkPager(['pagination' => $pages]);
+
+        //echo "<pre>"; var_dump($pager); exit;
 
         return $this->render('index.twig', [
             'visits' => $session->get('visits'),
             'news' => $news,
+            'pages' => $pages,
+           // 'pager' => $pager,
         ]);
     }
 

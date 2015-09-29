@@ -120,11 +120,12 @@
 
 
                 <!--пагинатор-->
+                {{ use('yii/widgets/LinkPager') }}
                 <table style="width: 100%; margin-bottom: 20px;">
                     <tr>
-                        <td style="width: 20%">Всего страниц: {{ news.getCountPage }}</td>
-                        <td style="width: 30%; text-align: center;">пагинатор:новости</td>
-                        <td style="width: 10%; text-align: center;"> Всего: {{ news.getTotalItemCount }}</td>
+                        <td style="width: 20%">Всего страниц: {{ pages.pageCount }}</td>
+                        <td style="width: 30%; text-align: center;">{{ link_pager_widget({'pagination': pages}) }}</td>
+                        <td style="width: 10%; text-align: center;"> Всего: {{ pages.totalCount  }}</td>
                         <td style="width: 40%; text-align: right;">Показывать
                             <a href="?maxItemPerPage=20">20</a>
                             <a href="?maxItemPerPage=50">50</a>

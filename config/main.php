@@ -52,6 +52,10 @@ return [
                     'options' => [
                         'auto_reload' => true,
                     ],
+                    // add Yii helpers or widgets here or {{ use('yii/web/LinkPager') }} in template.twig
+                    /*'globals' => [
+                        'LinkPager' => '\yii\widgets\LinkPager',
+                    ],*/
                     // ... see ViewRenderer for more options
                 ],
             ],
