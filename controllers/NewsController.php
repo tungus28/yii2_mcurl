@@ -27,7 +27,7 @@ class NewsController extends Controller
         $provider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 20,
+                'pageSize' => (int)Yii::$app->request->get('per-page', 20),//second arg - default value
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -40,7 +40,7 @@ class NewsController extends Controller
         $pages = $provider->getPagination();//to be called after getModels()
       //  $pager = new LinkPager(['pagination' => $pages]);
 
-        //echo "<pre>"; var_dump($pager); exit;
+        //echo "<pre>"; var_dump((abs(Yii::$app->request->get('per-page', 20)))); exit;
 
         return $this->render('index.twig', [
             'visits' => $session->get('visits'),
