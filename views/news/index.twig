@@ -39,7 +39,7 @@
                     }
 
                     //обработка одной новости
-                    $.post( "/getonenews", { getNews: 1})
+                    $.post( "/news/get-one-news", { getNews: 1, _csrf: $('#getNews').attr('value')})//TODO - add yii object to use yii.getCsrfToken()
                         .done(function( resp ) {
                             flagOneNews = 'done';
                             $('#oneNewsStatus').append(resp);
@@ -86,7 +86,7 @@
                 });
                 //очистить базу
                 $('#clearDB').click(function() {
-                    $.get("/cleardb",{})
+                    $.get("/news/clear-db",{_csrf: $('#getNews').attr('value')})
                             .done(function(data) {
                                 //alert(data);
 
@@ -102,10 +102,10 @@
             <form method="post" action="">
                 <div style="margin-bottom: 30px;">
 
-                    <button id="getNews" class="btn btn-primary"  type="button">Получить новость</button>
+                    <button id="getNews" class="btn btn-primary"  type="button" value="{{ csrfToken }}" >Получить новость</button>
                     <button id="getLotNews" class="btn btn-primary" type="button">Получить много новостей</button>
                     <button class="btn btn-primary">Статистика по буквам</button><br><br>
-                    <button id="clearDB" class="btn btn-primary">Очистить базу и перезагрузить</button>
+                    <button id="clearDB" class="btn btn-primary" type="button">Очистить базу</button>
 
                     <div style="margin-bottom: 10px;">
                         <label>Введите слово для фильтра&nbsp;</label>
@@ -150,7 +150,7 @@
                         <tr >
                             <td align="center">{{ loop.index }}</td>
                             <!--td align="center">{# item.created | date("d-m-Y") #}</td-->
-                            <td align="left" style="padding: 10px">{{ item.name }}</td>
+                            <td align="left" style="padding: 10px">{{ item.title }}</td>
                             <td>{{ item.content | slice(0, 400)  }}</td><!-- slice(0, 400) -->
                             <td align="center"><input type="checkbox" name="active[]" value="{{ loop.index0 }}"></td>
                             <td align="center">{{ item.freq }}</td>

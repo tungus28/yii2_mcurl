@@ -8,7 +8,7 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "ra_news".
  *
- * @property string $name
+ * @property string $title
  * @property string $content
  * @property boolean $active
  * @property integer $freq
@@ -31,8 +31,8 @@ class News extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'content', 'active', 'freq', 'id', 'created'], 'required'],
-            [['name', 'content'], 'string'],
+            [['title', 'content', 'active', 'freq', 'id', 'created'], 'required'],
+            [['title', 'content'], 'string'],
             [['active'], 'boolean'],
             [['freq', 'id'], 'integer'],
             [['created'], 'safe']
@@ -45,7 +45,7 @@ class News extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => 'Name',
+            'title' => 'Title',
             'content' => 'Content',
             'active' => 'Active',
             'freq' => 'Freq',

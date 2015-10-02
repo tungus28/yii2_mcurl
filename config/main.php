@@ -23,7 +23,7 @@ return [
 		'urlManager' => [
 			'enablePrettyUrl' => true,
 			'rules' => [
-				// your rules go here
+                //'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 			],    
 		],
         'user' => [
