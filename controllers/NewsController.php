@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
+use yii\base\ErrorException;
+use yii\db\Expression;
 use yii\web\Controller;
 use frontend\models\News;
 use yii\data\ActiveDataProvider;
@@ -204,11 +206,16 @@ class NewsController extends Controller
         $oneNews = new News();
         $oneNews->title = $news['title'];
         $oneNews->content = $news['content'];
-        $oneNews->created = new \DateTime('now');
+        $oneNews->created = new Expression('NOW()');
         $oneNews->active = 0;
         $oneNews->freq = 0;
 
-        $oneNews->save();
+        //echo "<pre>"; print_r($oneNews); exit;
+
+        if(!$oneNews->save()) {
+            $msg = "ошибка записи: " . serialize($oneNews->errors);
+            throw new ErrorException($msg);
+        }
     }
 
     public function actionClearDb(/*Request $request*/)
