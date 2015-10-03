@@ -218,7 +218,7 @@ class NewsController extends Controller
         }
     }
 
-    public function actionClearDb(/*Request $request*/)
+    public function actionClearDb()
     {
         News::deleteAll(/*['status' => Customer::STATUS_INACTIVE]*/);
     }
