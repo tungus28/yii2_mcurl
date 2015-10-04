@@ -70,14 +70,18 @@ class NewsController extends Controller
             throw new HttpException(404, 'Ajax only');
         }
 
+        $this->saveInSession('one_news_progress', '');
+
         if(Yii::$app->request->post('getNews')) {
             $this->timer = $this->microtime_float();
             $newsGot = $this->getMainNews();
 
             if ( $newsGot['title'] != '' && $this->isUnique($newsGot['title']) ) {
                 $this->saveOneNews($newsGot);
+                //$this->saveInSession('one_news_progress', $this->timeCut() . "<br>сохранение новости: ");
                 exit($this->timeCut() . "<br>новость добавлена базу");
             } else {
+                //$this->saveInSession('one_news_progress', '');
                 exit($this->timeCut() . "<br>такая новость есть в базе");
             }
         }
@@ -142,8 +146,6 @@ class NewsController extends Controller
         $news = array();
         $news['title'] = $title;
         $news['content'] = $text;
-
-        $this->saveInSession('one_news_progress', $this->timeCut() . "<br>обработка новости: ");
 
         return $news;
     }
@@ -234,7 +236,7 @@ class NewsController extends Controller
             throw new HttpException(404, 'Ajax only');
         }
 
-        $this->saveInSession('all', 0);
+        $this->saveInSession('cnt_all', 0);
         $this->saveInSession('cnt_repeat', 0);
         $this->saveInSession('news_cnt', 0);
         //очист базу

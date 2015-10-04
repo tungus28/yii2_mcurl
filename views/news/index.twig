@@ -42,9 +42,9 @@
                     $.post( "/news/get-one-news", { getNews: 1, _csrf: $('#getNews').attr('value')})//TODO - add yii object to use yii.getCsrfToken()
                         .done(function( resp ) {
                             flagOneNews = 'done';
-                            $('#oneNewsStatus').append(resp);
                             $('#getNews').css("background-color", "#337ab7");
                             setTimeout(function(){
+                                $('#oneNewsStatus').append(resp);
                                 buttonGetNewsPressed = false;
                             }, 500);//держим клавишу еще нажатой 0.5 с
                         });
