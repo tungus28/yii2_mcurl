@@ -9,11 +9,15 @@ use yii\web\Controller;
 use frontend\models\News;
 use yii\data\ActiveDataProvider;
 use yii\web\HttpException;
+use \Curl\Curl;
+use Curl\MultiCurl;
 
 
 class NewsController extends Controller
 {
     public $timer;
+    public $piece = 2;
+    public $urlsToRepeat;
 
     public function saveInSession($name, $data)
     {
@@ -221,6 +225,141 @@ class NewsController extends Controller
     public function actionClearDb()
     {
         News::deleteAll(/*['status' => Customer::STATUS_INACTIVE]*/);
+    }
+
+    public function actionGetLotNews()
+    {
+        //проверка на ajax запрос
+        if (!Yii::$app->request->isAjax) {
+            throw new HttpException(404, 'Ajax only');
+        }
+
+        $this->saveInSession('all', 0);
+        $this->saveInSession('cnt_repeat', 0);
+        $this->saveInSession('news_cnt', 0);
+        //очист базу
+        $this->actionClearDb();
+
+        if(Yii::$app->request->post('getLotNews')) {
+            $urlsAll = $this->getLotNewsUrls();//список ссылок новостей
+
+            $cnt = count($urlsAll);
+
+            $this->saveInSession('cnt_all', $cnt);
+
+            $this->multiCurlByParts($urlsAll, $this->piece);
+
+            //прогоняем неудачные загрузки
+            if (count($this->urlsToRepeat) > 0 ) {
+                $this->multiCurlByParts($this->urlsToRepeat, 1);//ошибочные загрузки повторяем по одной
+            }
+        }
+
+        return Yii::$app->session->get('cnt_repeat');
+
+    }
+
+    public function multiCurlByParts($urlsAll, $piece = 2)
+    {
+        $cnt = count($urlsAll);
+        for ( $i = 0; $i < $cnt; $i = $i + $piece ) {
+            $this->multiCurl(array_slice($urlsAll, $i, $piece));
+        }
+        return true;
+    }
+
+    public function multiCurl($urls)
+    {
+        $this->timer = $this->microtime_float();
+
+        $multi_curl = new MultiCurl();
+
+        $multi_curl->setOpt(CURLOPT_ENCODING , 'gzip');
+
+        $multi_curl->success(function($instance) {
+            session_start();
+            $_SESSION['news_cnt']++;//количество удачных загрузок новостей
+            session_write_close();
+            //echo 'call to "' . $instance->url . '" was successful.' . "\n";
+            //echo 'response: ' . $instance->response . "\n";
+            $newsGot = $this->getContent($instance->response);
+            if ($this->isUnique($newsGot['title'])) {
+                $this->saveOneNews($newsGot);
+            }
+        });
+
+        $multi_curl->error(function($instance) {
+            echo 'call to "' . $instance->url . '" was unsuccessful.' . "\n";
+            $this->urlsToRepeat[] = $instance->url;
+            session_start();
+            $_SESSION['cnt_repeat']++;
+            session_write_close();
+            //echo 'error code: ' . $instance->errorCode . "\n";
+            //echo 'error message: ' . $instance->errorMessage . "\n";
+        });
+
+        $multi_curl->complete(function($instance) {
+            //echo 'call completed' . "\n";
+        });
+
+        foreach($urls as $url) {
+            $multi_curl->addGet($url);
+        }
+
+        $multi_curl->start();
+
+        //таймер на конец функции
+        session_start();
+        $_SESSION['curl_timer'] = $this->timeCut();
+        session_write_close();
+
+    }
+
+    public function getLotNewsUrls($url1='http://ria.ru/world/')
+    {
+        $c = curl_init($url1);
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
+
+        $text = curl_exec($c);//примерно 15 с
+
+        curl_close($c);
+
+        $arrOut = array();
+        preg_match_all("#\/\w+\/\d+\/\d+.html#", $text, $arrOut);
+        $arrOut = array_unique($arrOut[0]);//массив ссылок на новости - обработка с regexp ~0.02c
+
+
+        $urlsAll = array();
+        foreach($arrOut as $k=>$v){
+            $urlsAll[] = 'http://ria.ru' . $v;
+        }
+
+        return $urlsAll;
+
+    }
+
+    /**
+     * @param string $text
+     * @return array
+     */
+    public function getContent($text)
+    {
+        $title = substr($text, strpos($text, 'article_header_title'), strpos($text, 'article_header_story') - strpos($text, 'article_header_title'));
+        $title = substr($title, strpos($title, '>') + 1, strpos($title, '<') - strpos($title, '>') - 1);
+        $text = substr($text, strpos($text, 'articleBody') + 13);
+        //убрать из статьи <div class="media_copyright">© AP Photo/ Alexander Zemlianichenko</div>
+        $text = substr($text, 0, strpos($text, 'facebook'));
+        $text = $this->strip_tags_content($text, '<a>', true);
+        $text = strip_tags($text);
+        $smth = array('|', '&nbsp;', '&ndash;','&mdash;', '&raquo;', '&laquo;');
+        $forSmth = array(' ', ' ', '-', '-', '\"', '\"');
+        $text = str_replace($smth, $forSmth, $text);
+        $newsGot = array();
+        $newsGot['title'] = $title;
+        $newsGot['content'] = $text;
+
+        return $newsGot;
     }
 
 }

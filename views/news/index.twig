@@ -74,7 +74,7 @@
                                    newsCnt = resp;
                                 });
                     }
-                    $.post( "/getlotnews", { getLotNews: 1})
+                    $.post( "/news/get-lot-news", { getLotNews: 1, _csrf: $('#getNews').attr('value')} )
                         .done(function( resp ) {
                             setTimeout(clearInterval(intervalCheck), 1001);//отмена проверки прогресса через 1с от конца запроса
                         });
