@@ -98,16 +98,16 @@
             });
         </script>
             <div id="test"></div>
-            <div style="float: right; margin: 20px;">Количество посещений {{ visits }}</div>
+            <div style="float: right; margin: 10px;">Количество посещений {{ visits }}</div>
             <form method="post" action="">
                 <div style="margin-bottom: 30px;">
 
                     <button id="getNews" class="btn btn-primary"  type="button" value="{{ csrfToken }}" >Получить новость</button>
                     <button id="getLotNews" class="btn btn-primary" type="button">Получить много новостей</button>
-                    <button class="btn btn-primary">Статистика по буквам</button><br><br>
+                    <button class="btn btn-primary">Статистика по буквам</button>
                     <button id="clearDB" class="btn btn-primary" type="button">Очистить базу</button>
 
-                    <div style="margin-bottom: 10px;">
+                    <div style="margin-top: 15px;">
                         <label>Введите слово для фильтра&nbsp;</label>
                         <input placeholder="слово" type="text" name="searchWord" >
                         <input  class="btn btn-primary" type = "submit" name='get_freq' value="Отчет по словам">

@@ -50,16 +50,21 @@ class NewsController extends Controller
                 'pageSize' => (int)Yii::$app->request->get('per-page', 20),//second arg - default value
             ],
             'sort' => [
-                'defaultOrder' => [
+                /*'defaultOrder' => [
                     'title' => SORT_ASC,
-                ]
+                ]*/
+                'attributes' => [
+                    'title',
+                    'content',
+                    'created_at',
+                ],
             ],
         ]);
 
         $news = $provider->getModels();
         $pages = $provider->getPagination();//to be called after getModels()
 
-        //echo "<pre>"; var_dump((abs(Yii::$app->request->get('per-page', 20)))); exit;
+        echo "<pre>"; var_dump($provider); exit;
 
         return $this->render('index.twig', [
             'visits' => $session->get('visits'),
