@@ -53,4 +53,9 @@ class News extends ActiveRecord
             'created' => 'Created',
         ];
     }
+
+    public function getShortContent()
+    {
+        return substr($this->content, 0, 300);
+    }
 }

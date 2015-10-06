@@ -71,8 +71,20 @@ class NewsController extends Controller
             //'news' => $news,
             //'pages' => $pages,
             'dataProvider' => $provider,
+            'columns' => ["id", "title", "content:text", "created:date']}"],
             'csrfToken' => Yii::$app->request->getCsrfToken(),
+            //'cont' => $this,
         ]);
+    }
+
+    public function getShortText($model, $key, $index, $dataColumn)
+    {
+        //var_dump($item);
+        //var_dump($row);
+        $name = $dataColumn->attribute;
+        echo "<pre>"; var_dump($dataColumn->category);exit;
+        //return substr($text, 0, 400);
+        //return $item->value . $row;
     }
 
     public function actionGetOneNews()
