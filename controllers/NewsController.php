@@ -9,6 +9,7 @@ use yii\web\Controller;
 use frontend\models\News;
 use yii\data\ActiveDataProvider;
 use yii\web\HttpException;
+use yii\helpers\HtmlPurifier;
 
 use \Curl\Curl;
 use Curl\MultiCurl;
@@ -85,7 +86,7 @@ class NewsController extends Controller
     public function getShortText($model, $key, $index, $dataColumn)
     {
         $name = $dataColumn->attribute;
-        return substr($model[$name], 0, 800);
+        return HtmlPurifier::process(substr($model[$name], 0, 800));//HtmlPurifier works very slowly
     }
 
     public function actionGetOneNews()
