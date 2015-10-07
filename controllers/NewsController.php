@@ -86,7 +86,10 @@ class NewsController extends Controller
     public function getShortText($model, $key, $index, $dataColumn)
     {
         $name = $dataColumn->attribute;
-        return HtmlPurifier::process(substr($model[$name], 0, 800));//HtmlPurifier works very slowly
+        //return HtmlPurifier::process(substr($model[$name], 0, 800));//HtmlPurifier works very slowly
+
+        $posSpace = strpos($model[$name], ' ', 800);//todo выделить в отдельную фунцкию
+        return substr($model[$name], 0, $posSpace) . ' ...';
     }
 
     public function actionGetOneNews()
