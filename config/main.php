@@ -8,11 +8,24 @@ $params = array_merge(
 
 return [
     'id' => 'app-frontend',
+    'language' => 'ru-Ru',
+    /*'i18n' => [
+        'translations' => [
+            '*' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@frontend/messages',
+                'sourceLanguage' => 'en',
+                'fileMap' => [
+                    //'main' => 'main.php',
+                ],
+            ],
+        ],
+    ],*/
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
 	'defaultRoute' => 'news',
     'controllerNamespace' => 'frontend\controllers',
-	'layout' => 'main.twig',
+	//'layout' => 'main.twig',
 	'modules' => [		
 		'webshell' => [
 			'class' => 'samdark\webshell\Module',
