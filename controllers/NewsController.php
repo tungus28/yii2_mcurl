@@ -49,11 +49,12 @@ class NewsController extends Controller
             'query' => $query,
             /*'pagination' => [
                 'pageSize' => (int)Yii::$app->request->get('per-page', 20),//second arg - default value
-            ],
+            ],*/
             'sort' => [
                 'defaultOrder' => [
                     'title' => SORT_ASC,
                 ],
+            ],/*
                 'attributes' => [
                     'title',
                     'content',

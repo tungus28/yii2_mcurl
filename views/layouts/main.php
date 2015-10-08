@@ -23,8 +23,8 @@ AppAsset::register($this);
 </head>
 <body>
     <?php $this->beginBody() ?>
-    <div class="wrap">
-        <?php
+    <div> <!--class="wrap"-->
+        <?php /*
             NavBar::begin([
                 'brandLabel' => 'Главная',
                 'brandUrl' => Yii::$app->homeUrl,
@@ -50,7 +50,7 @@ AppAsset::register($this);
                 'items' => $menuItems,
             ]);
             NavBar::end();
-        ?>
+       */ ?>
 
         <div class="container">
         <?= Breadcrumbs::widget([

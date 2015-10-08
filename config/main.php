@@ -9,6 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'language' => 'ru-Ru',
+    'sourceLanguage'=>'ru',
     /*'i18n' => [
         'translations' => [
             '*' => [
