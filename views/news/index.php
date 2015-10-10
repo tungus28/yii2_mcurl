@@ -3,6 +3,7 @@ use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 //$this->title = 'My Yii Application';
+//$this->registerJsFile('/js/news.js', ['position' => yii\web\View::POS_READY]);
 ?>
 <div id="test"></div>
 <div style="float: right; margin: 20px;">Количество посещений: <?= $visits ?></div>
@@ -48,7 +49,7 @@ use yii\grid\GridView;
         [
             'attribute' => "title",
             'label' => 'Заголовок',
-            'options' => ['style' => 'width: 300px; text-align: right;']
+            'headerOptions' => ['style' => 'width: 300px; text-align: center;']
         ],
         [
             'attribute' => "content",
@@ -63,7 +64,9 @@ use yii\grid\GridView;
             'attribute' => "created",
             'label' => 'Дата загрузки',
             'format' => ['date', 'php:d/m/Y'],
-            'headerOptions' => ['style' => 'width: 200px; align: center;']],
+            'headerOptions' => ['style' => 'text-align: center;'],
+            'contentOptions' => ['style' => 'text-align: center;'],
+        ],
     ]
 ]); ?>
 
