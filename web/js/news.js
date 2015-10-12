@@ -1,8 +1,5 @@
 $(function(){
-    //alert('news.js is ok');
-    //check - 18:00
-	//cghfh
-	//khkk
+    //console.log('news.js is ok');       
     var buttonGetNewsPressed = false;
     //кнопка получить новость
     $('#getNews').click(function(){//одна новость
@@ -90,6 +87,6 @@ $(function(){
                 });
         }
 
-    ); //check 3:15 17:07
+    );
 
 });
