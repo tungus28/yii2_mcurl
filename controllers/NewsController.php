@@ -168,20 +168,29 @@ class NewsController extends Controller
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
         $text = curl_exec($c);
+
+        /* обработка полученной новости */
         $title = substr($text, strpos($text, 'article_header_title'), strpos($text, 'article_header_story') - strpos($text, 'article_header_title'));
         $title = substr($title, strpos($title, '>') + 1, strpos($title, '<') - strpos($title, '>') - 1);
+
         $text = substr($text, strpos($text, 'articleBody') + 13);
         //убрать из статьи <div class="media_copyright">© AP Photo/ Alexander Zemlianichenko</div>
-        $text = substr($text, 0, strpos($text, 'facebook'));
+        /*$text = substr($text, 0, strpos($text, 'facebook'));
         $text = $this->strip_tags_content($text, '<a>', true);
         //sleep(3);
         $text = strip_tags($text);
         $smth = array('|', '&nbsp;', '&ndash;','&mdash;', '&raquo;', '&laquo;');
         $forSmth = array(' ', ' ', '-', '-', '\"', '\"');
-        $text = str_replace($smth, $forSmth, $text);
+        $text = str_replace($smth, $forSmth, $text);*/
+
         $news = array();
         $news['title'] = $title;
-        $news['content'] = $text;
+        $news['content'] = HtmlPurifier::process($text, [
+            //'HTML.ForbiddenElements' => ['img', 'a'],
+            'HTML.AllowedElements' => ['p'],
+        ]);
+        var_dump($news['content']);exit;
+
 
         return $news;
     }

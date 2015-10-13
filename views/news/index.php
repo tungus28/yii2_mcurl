@@ -55,10 +55,10 @@ use yii\grid\GridView;
             'attribute' => "content",
             'label' => 'Текст статьи',
             //'value' => [Yii::$app->controller, 'getShortText']
-            'value' => function($model) {
+            /*'value' => function($model) {
                 //return Html::link('@' . $model->author->Twitter, 'http://twitter.com/' . $model->author->Twitter);
                 return mb_substr($model->content, 0, 800, 'UTF-8');
-            }
+            }*/
         ],
         [
             'attribute' => "created",
