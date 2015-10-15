@@ -14,6 +14,8 @@ use yii\helpers\HtmlPurifier;
 use \Curl\Curl;
 use Curl\MultiCurl;
 
+//use phpQuery;
+
 
 
 
@@ -34,6 +36,7 @@ class NewsController extends Controller
 
     public function actionIndex()
     {
+
         $session = Yii::$app->session;
         if ($session->has('visits')) {
             $session->set('visits', $session->get('visits') + 1);
@@ -169,8 +172,9 @@ class NewsController extends Controller
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);
         $text = curl_exec($c);
 
+
         /* обработка полученной новости */
-        $title = substr($text, strpos($text, 'article_header_title'), strpos($text, 'article_header_story') - strpos($text, 'article_header_title'));
+        /*$title = substr($text, strpos($text, 'article_header_title'), strpos($text, 'article_header_story') - strpos($text, 'article_header_title'));
         $title = substr($title, strpos($title, '>') + 1, strpos($title, '<') - strpos($title, '>') - 1);
 
         $text = substr($text, strpos($text, 'articleBody') + 13);
@@ -183,17 +187,58 @@ class NewsController extends Controller
         $forSmth = array(' ', ' ', '-', '-', '\"', '\"');
         $text = str_replace($smth, $forSmth, $text);*/
 
+        //$text = '<html><div id="article_full_text"><p>first</p><p>second</p></div>';
+
+        /*$text = HtmlPurifier::process($text, [
+            //'HTML.ForbiddenElements' => ['img', 'a'],
+            'Core.CollectErrors' => true,
+            'HTML.AllowedElements' => ['div', 'p'],
+        ]);*/
+
+        /*$fp = fopen("/webhome/yii2.loc/frontend/runtime/data.txt", 'w');
+        fwrite($fp, $text);
+        fclose($fp); die('ok');*/
+
+        /*$doc = new \DOMDocument();
+        //$doc->validateOnParse = true;
+
+        //$doc->loadHTML('<?xml encoding="UTF-8">' . $text);
+        $doc->loadHTML($text);
+        //
+        //$doc->validateOnParse = true;
+        //$xpath = new \DOMXpath($doc);
+        //$out = $xpath->query("//div[@class='article_full_text']"); //'//div[@class="blogArticle"]'
+        $out = $doc->getElementById('article_full_text');
+//        foreach ($out as $div) {
+//            echo $div->nodeValue, '<br>';
+//        }*/
+
+        //require_once("$vendorDir");
+        $doc = \phpQuery::newDocument($text);
+        //$out = $document->find('div#article_full_text');
+        echo $doc['#article_full_text']; exit;
+
+       // echo "<pre>"; var_dump($out); exit;
         $news = array();
         $news['title'] = $title;
         $news['content'] = HtmlPurifier::process($text, [
             //'HTML.ForbiddenElements' => ['img', 'a'],
+            'Core.CollectErrors' => true,
             'HTML.AllowedElements' => ['p'],
         ]);
-        var_dump($news['content']);exit;
+        //var_dump($news['content']);exit;
 
 
         return $news;
     }
+
+    /*public function findCloseTag($text, $wordInOpenTag) {
+        //preg_match_all("|<[^>]+>.*</[^>]+>|U",
+        preg_match_all("|<div[^>]+>.*</div>|U",
+            $text,
+            $out);
+        return $out;
+    }*/
 
     /**
      * Функция обработки html - различные варианты обрезки тэгов
