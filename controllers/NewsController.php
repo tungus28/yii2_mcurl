@@ -174,60 +174,17 @@ class NewsController extends Controller
 
 
         /* обработка полученной новости */
-        /*$title = substr($text, strpos($text, 'article_header_title'), strpos($text, 'article_header_story') - strpos($text, 'article_header_title'));
-        $title = substr($title, strpos($title, '>') + 1, strpos($title, '<') - strpos($title, '>') - 1);
-
-        $text = substr($text, strpos($text, 'articleBody') + 13);
-        //убрать из статьи <div class="media_copyright">© AP Photo/ Alexander Zemlianichenko</div>
-        /*$text = substr($text, 0, strpos($text, 'facebook'));
-        $text = $this->strip_tags_content($text, '<a>', true);
-        //sleep(3);
-        $text = strip_tags($text);
-        $smth = array('|', '&nbsp;', '&ndash;','&mdash;', '&raquo;', '&laquo;');
-        $forSmth = array(' ', ' ', '-', '-', '\"', '\"');
-        $text = str_replace($smth, $forSmth, $text);*/
-
-        //$text = '<html><div id="article_full_text"><p>first</p><p>second</p></div>';
-
-        /*$text = HtmlPurifier::process($text, [
-            //'HTML.ForbiddenElements' => ['img', 'a'],
-            'Core.CollectErrors' => true,
-            'HTML.AllowedElements' => ['div', 'p'],
-        ]);*/
-
-        /*$fp = fopen("/webhome/yii2.loc/frontend/runtime/data.txt", 'w');
-        fwrite($fp, $text);
-        fclose($fp); die('ok');*/
-
-        /*$doc = new \DOMDocument();
-        //$doc->validateOnParse = true;
-
-        //$doc->loadHTML('<?xml encoding="UTF-8">' . $text);
-        $doc->loadHTML($text);
-        //
-        //$doc->validateOnParse = true;
-        //$xpath = new \DOMXpath($doc);
-        //$out = $xpath->query("//div[@class='article_full_text']"); //'//div[@class="blogArticle"]'
-        $out = $doc->getElementById('article_full_text');
-//        foreach ($out as $div) {
-//            echo $div->nodeValue, '<br>';
-//        }*/
-
-        //require_once("$vendorDir");
         $doc = \phpQuery::newDocument($text);
-        //$out = $document->find('div#article_full_text');
-        echo $doc['#article_full_text']; exit;
+        $title = $doc['.article_header_title']->html();
+        $content = $doc['#article_full_text']->html();
 
-       // echo "<pre>"; var_dump($out); exit;
         $news = array();
         $news['title'] = $title;
-        $news['content'] = HtmlPurifier::process($text, [
+        $news['content'] = HtmlPurifier::process($content, [
             //'HTML.ForbiddenElements' => ['img', 'a'],
             'Core.CollectErrors' => true,
             'HTML.AllowedElements' => ['p'],
         ]);
-        //var_dump($news['content']);exit;
-
 
         return $news;
     }
